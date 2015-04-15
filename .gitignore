@@ -1,0 +1,17 @@
+
+.idea
+atlassian-ide-plugin.xml
+node_modules
+
+public/bower_components
+
+public/storage
+!public/storage/.gitkeep
+
+public/css/main.css
+public/js/main.min.*
+
+public/coverage
+
+bower_components
+storage
