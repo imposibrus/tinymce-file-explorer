@@ -21,6 +21,8 @@
   "dependencies": {
     "jquery": "~2.1.3",
     "noty": "~2.3.4",
-    "tinymce": "~4.1.9"
+    "tinymce": "~4.1.9",
+    "bootstrap": "~3.3.4",
+    "lodash": "~3.7.0"
   }
 }

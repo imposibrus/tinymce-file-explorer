@@ -3,7 +3,9 @@
 <head lang="en">
   <meta charset="UTF-8">
   <title>title</title>
-
+  <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap-theme.min.css"/>
+  <link rel="stylesheet" href="/css/main.css"/>
 </head>
 <body>
 
@@ -12,8 +14,26 @@
     <textarea name="text" id="textarea" class="tinymce"></textarea>
   </div>
 
+
+  <script type="text/template" id="files_list_template">
+    <div class="files_list">
+      <% files.forEach(function(file) { %>
+        <div class="item" data-type="<%= file.type %>" data-file-path="/storage/<%= file.name %>">
+          <div class="icon <%= file.type %>">
+            <% if(file.fileType == 'image'){ %>
+              <img src="/storage/<%= file.name %>" class="image_preview">
+            <% } %>
+          </div>
+          <div class="title"><%= file.name %></div>
+        </div>
+      <% }); %>
+    </div>
+  </script>
+
   <script src="/bower_components/jquery/dist/jquery.min.js"></script>
   <script src="/bower_components/tinymce/jquery.tinymce.min.js"></script>
+  <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script src="/bower_components/lodash/lodash.js"></script>
   <script src="/js/main.js"></script>
 </body>
 </html>
