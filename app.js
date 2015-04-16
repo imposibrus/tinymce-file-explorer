@@ -2,24 +2,70 @@
 var express = require('express'),
     http = require('http'),
     app = express(),
+    bodyParser = require('body-parser'),
+
+    postNormalize = require('./postNormalize'),
     fs = require('fs'),
     path = require('path'),
     Q = require('q'),
     _ = require('lodash');
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(postNormalize);
+
 var storagePath = path.join(__dirname, 'storage');
+
 app.get('/filesList', function(req, res, next) {
   var folder = _.without(_.compact(req.query.folder.split('/')), 'storage').join('/');
-  //if(folder[0] == '/') {
-  //  folder = folder.substr(1);
-  //}
 
   getAllInDir(path.join(storagePath, folder)).done(function(filesStats) {
-    res.send({status: 200, files: sortFiles(filesStats)});
+    var isRoot = folder ? false : true;
+    res.send({
+      status: 200,
+      files: sortFiles(filesStats),
+      isRoot: isRoot
+    });
   }, function(err) {
     next(err);
   });
 });
+
+app.post('/upload', function(req, res) {
+  var uploadPromises = [];
+  _.each(req.files, function(file) {
+    var userFolder = '/storage/attachments',
+        newFilename = file.hash + path.extname(file.name),
+        newFilePath = path.join(storagePath, newFilename),
+
+        userUrl = path.join(userFolder, newFilename),
+
+        defer = Q.defer();
+
+    //fs.renameSync(file.path, newFilePath);
+    fs.createReadStream(file.path).pipe(fs.createWriteStream(newFilePath)).on('close', function() {
+      fs.unlink(file.path, function (err) {
+        if(err) {
+          console.log(err);
+        }
+      });
+
+      defer.resolve(userUrl);
+    }).on('error', function(err) {
+      defer.reject(err);
+    });
+
+    uploadPromises.push(defer.promise);
+  });
+
+  Q.all(uploadPromises).done(function(files) {
+    res.send({status: 200, files: files});
+  }, function(err) {
+    res.status(500).send({status: 500, err: err});
+  });
+});
+
 
 var imageExtensions = ['.png', '.jpg', '.jpeg', '.bmp', '.gif', '.tiff'];
 

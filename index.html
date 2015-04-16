@@ -16,17 +16,32 @@
 
 
   <script type="text/template" id="files_list_template">
-    <div class="files_list">
-      <% files.forEach(function(file) { %>
-        <div class="item" data-type="<%= file.type %>" data-file-path="/storage/<%= file.name %>">
-          <div class="icon <%= file.type %>">
-            <% if(file.fileType == 'image'){ %>
-              <img src="/storage/<%= file.name %>" class="image_preview">
-            <% } %>
+    <div class="files_list_wrp">
+      <div class="navigation">
+        <% if(!isRoot){ %>
+          <a href="#" class="back">Back</a>
+        <% } %>
+      </div>
+      <div class="files_list">
+        <% files.forEach(function(file) { %>
+          <div class="item" data-type="<%= file.type %>" data-file-path="/storage/<%= file.name %>">
+            <div class="icon <%= file.type %>">
+              <% if(file.fileType == 'image'){ %>
+                <img src="/storage/<%= file.name %>" class="image_preview">
+              <% } %>
+            </div>
+            <div class="title"><%= file.name %></div>
           </div>
-          <div class="title"><%= file.name %></div>
-        </div>
-      <% }); %>
+        <% }); %>
+      </div>
+      <div class="upload_wrp">
+        <button class="btn btn-success upload_image" type="button">
+          <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+          <span>Загрузить</span>
+          <input type="file" class="file_input" multiple="multiple"/>
+        </button>
+
+      </div>
     </div>
   </script>
 
